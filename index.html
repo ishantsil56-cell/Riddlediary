@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tom Riddle's Diary</title>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
@@ -11,67 +11,80 @@
             --ink-black: #1a1512;
             --gold-leaf: #af9500;
             --dark-shadow: rgba(0, 0, 0, 0.6);
-            --magic-glow: 0 0 8px #af9500;
         }
 
-        body {
+        /* Prevent zooming/scrolling on Android */
+        html, body {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
             background-color: #0d0b09;
+            margin: 0;
             font-family: 'Crimson Text', serif;
-            color: var(--ink-black);
+        }
+
+        /* Fixed Dimensions Container */
+        .app-container {
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
+            align-items: center;
         }
 
-        /* Magical Ambient Texture */
         .diary-page {
             background: var(--parchment);
-            background-image: url('https://www.transparenttextures.com/patterns/pinstriped-dark.png');
-            box-shadow: inset 0 0 60px var(--dark-shadow), 5px 10px 20px #000;
-            padding: 30px;
-            width: 100%;
-            max-width: 450px;
-            min-height: 650px;
+            background-image: 
+                /* Horcrux Scripture/Drawing Overlay */
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M10 10 Q 50 10 90 90' stroke='%3C#af950022' fill='none'/%3E%3Ccircle cx='50' cy='50' r='20' stroke='%23af950011' fill='none'/%3E%3C/svg%3E"),
+                url('https://www.transparenttextures.com/patterns/pinstriped-dark.png');
+            box-shadow: inset 0 0 60px var(--dark-shadow);
+            width: 90vw;
+            height: 80vh;
+            max-width: 400px; /* Compact for Android */
+            max-height: 600px;
             position: relative;
             display: flex;
             flex-direction: column;
-            animation: flicker 8s infinite alternate;
+            border-radius: 4px;
         }
 
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.96; }
+        /* Horizontal Scroll Area */
+        #entry-list {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            flex-grow: 1;
+            padding: 10px;
+            gap: 20px;
         }
 
-        /* Flashcard Style - Content Removed */
+        /* Hide scrollbar */
+        #entry-list::-webkit-scrollbar { display: none; }
+
         .entry-card {
-            background: #f2e8d5;
-            margin: 15px 0;
-            padding: 18px;
-            cursor: pointer;
-            position: relative;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-            clip-path: polygon(0% 2%, 100% 0%, 98% 100%, 0% 98%); /* Simple torn look */
-            transition: transform 0.2s;
-        }
-        
-        .entry-card:hover {
-            transform: scale(1.02);
-            box-shadow: var(--magic-glow);
+            min-width: 85%;
+            scroll-snap-align: center;
+            background: rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 15px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            clip-path: polygon(0 1%, 100% 0, 99% 100%, 1% 99%);
         }
 
-        .quote-text {
-            font-size: 0.85rem;
-            font-style: italic;
-            text-align: center;
-            margin-top: 10px;
-            color: #555;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            padding-top: 5px;
+        /* Compact Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
 
+        /* Fixed Input Styles */
         input, textarea {
             background: transparent;
             border: none;
@@ -79,198 +92,194 @@
             font-family: inherit;
             color: var(--ink-black);
             outline: none;
-            width: 100%;
-            margin-bottom: 10px;
         }
 
-        button {
-            background: transparent;
-            border: 1px solid var(--ink-black);
-            font-family: inherit;
-            cursor: pointer;
-            padding: 8px 15px;
-            margin: 5px 0;
-            transition: 0.3s;
+        .action-bar {
+            padding: 15px;
+            background: rgba(0,0,0,0.05);
         }
 
-        button:hover { background: var(--ink-black); color: var(--parchment); }
-
-        /* Full Screen Edit Overlay */
-        #edit-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
+        /* Scriptural Decorations */
+        .horcrux-mark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            opacity: 0.1;
+            width: 50px;
+            pointer-events: none;
         }
 
         .hidden { display: none !important; }
+        
+        #edit-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" class="diary-page">
-        <h2 style="text-align:center; letter-spacing: 2px;">T.M. RIDDLE</h2>
-        <p id="display-riddle" style="font-style: italic; text-align: center; margin-top: 50px;"></p>
-        <input type="text" id="riddle-answer" placeholder="Respond to the diary..." style="text-align: center; margin-top: 30px;">
-        <button onclick="checkRiddle()">Speak</button>
-        <p id="auth-feedback" style="text-align:center; color: #700;"></p>
+<div class="app-container">
+    <div id="auth-screen" class="diary-page" style="justify-content: center; align-items: center; text-align: center;">
+        <h2 style="letter-spacing: 5px;">R I D D L E</h2>
+        <p id="display-riddle" style="padding: 0 20px; font-style: italic;"></p>
+        <input type="text" id="riddle-answer" placeholder="Respond..." style="width: 60%; text-align: center;">
+        <button onclick="checkRiddle()" style="margin-top: 20px; background: none; border: 1px solid var(--ink-black); padding: 10px 20px;">Unlock</button>
+        <p id="auth-feedback" style="font-size: 0.8rem; height: 20px;"></p>
     </div>
 
     <div id="main-screen" class="diary-page hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin:0;">The Ledger</h2>
-            <div style="cursor:pointer; font-size: 1.5rem;" onclick="toggleSettings(true)">&#9881;</div>
+        <div class="header">
+            <strong>The Ledger</strong>
+            <span onclick="toggleSettings(true)" style="cursor:pointer;">&#9881;</span>
         </div>
 
-        <div id="entry-list" style="flex-grow: 1; overflow-y: auto; margin: 20px 0;"></div>
+        <div id="entry-list"></div>
 
-        <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;">
-            <input type="date" id="new-date" style="width: auto;">
-            <input type="text" id="new-title" placeholder="A memory title...">
-            <textarea id="new-content" placeholder="Pour your soul here..." rows="2"></textarea>
-            <button onclick="addEntry()" style="width: 100%;">Seal in Ink</button>
+        <div class="action-bar">
+            <input type="text" id="new-title" placeholder="Title..." style="width: 70%;">
+            <input type="date" id="new-date" style="width: 25%; font-size: 0.7rem;">
+            <textarea id="new-content" placeholder="Write into the soul..." rows="2" style="width: 100%; margin-top: 10px;"></textarea>
+            <button onclick="addEntry()" style="width: 100%; margin-top: 10px; background: var(--ink-black); color: var(--parchment); border: none; padding: 5px;">Seal Memory</button>
         </div>
 
-        <div id="settings-menu" class="diary-page" style="display:none; position:absolute; top:0; left:0; height:100%; z-index:20;">
-            <h3>Enchanted Settings</h3>
-            <label>The Riddle:</label>
-            <input type="text" id="set-riddle">
-            <label>The Answer:</label>
-            <input type="text" id="set-answer">
-            <button onclick="saveSettings()">Apply Magic</button>
-            <button onclick="toggleSettings(false)">Close</button>
-        </div>
-    </div>
-
-    <div id="edit-modal">
-        <div class="diary-page" style="min-height: 80vh;">
-            <input type="text" id="edit-title" style="font-size: 1.5rem; font-weight: bold;">
-            <input type="date" id="edit-date" style="width: auto;">
-            <textarea id="edit-content" style="flex-grow: 1; border: none; margin-top: 20px;" placeholder="Writing..."></textarea>
-            <div style="display:flex; gap: 10px;">
-                <button onclick="updateEntry()" style="flex:1">Save Changes</button>
-                <button onclick="closeEdit()" style="flex:1">Close</button>
+        <div id="settings-menu" class="diary-page" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:200;">
+            <div style="padding: 20px;">
+                <h3>Diary Settings</h3>
+                <input type="text" id="set-riddle" placeholder="New Riddle" style="width:100%; margin-bottom: 20px;">
+                <input type="text" id="set-answer" placeholder="New Answer" style="width:100%; margin-bottom: 20px;">
+                <button onclick="saveSettings()" style="width: 100%;">Save Magic</button>
+                <button onclick="toggleSettings(false)" style="width: 100%; margin-top: 10px;">Back</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        let entries = JSON.parse(localStorage.getItem('diary_entries')) || [];
-        let config = JSON.parse(localStorage.getItem('diary_config')) || {
-            riddle: "I speak without a mouth and hear without ears. What am I?",
-            answer: "echo"
-        };
-        let currentEditIndex = null;
+<div id="edit-modal" class="hidden">
+    <div class="diary-page" style="height: 70vh;">
+        <div style="padding: 20px; display: flex; flex-direction: column; height: 100%;">
+            <input type="text" id="edit-title" style="font-weight: bold; font-size: 1.4rem;">
+            <textarea id="edit-content" style="flex-grow: 1; border: none; margin-top: 15px;"></textarea>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="updateEntry()" style="flex:1; padding: 10px;">Save</button>
+                <button onclick="closeEdit()" style="flex:1; padding: 10px;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        const magicQuotes = [
-            "The ink knows what the heart hides.",
-            "Shadows lengthen where the quill rests.",
-            "A secret kept is a power slept.",
-            "Only the worthy may read the fading lines."
-        ];
+<script>
+    let entries = JSON.parse(localStorage.getItem('diary_entries')) || [];
+    let config = JSON.parse(localStorage.getItem('diary_config')) || {
+        riddle: "What is the name of the orphan who lived?",
+        answer: "harry"
+    };
+    let currentEditIndex = null;
 
-        function init() {
-            document.getElementById('display-riddle').innerText = config.riddle;
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('new-date').value = today;
-        }
+    const horcruxQuotes = [
+        "A fragment of a soul, hidden in plain sight.",
+        "The serpent speaks only to its master.",
+        "Gold may shine, but the locket burns.",
+        "Knowledge is a dangerous Horcrux."
+    ];
 
-        function checkRiddle() {
-            const val = document.getElementById('riddle-answer').value.toLowerCase().trim();
-            if (val === config.answer.toLowerCase().trim()) {
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('main-screen').classList.remove('hidden');
-                renderEntries();
-            } else {
-                const feedback = document.getElementById('auth-feedback');
-                feedback.innerText = "The ink refuses to appear.";
-                setTimeout(() => feedback.innerText = "", 2000);
-            }
-        }
+    function init() {
+        document.getElementById('display-riddle').innerText = config.riddle;
+        document.getElementById('new-date').value = new Date().toISOString().split('T')[0];
+    }
 
-        function renderEntries() {
-            const list = document.getElementById('entry-list');
-            list.innerHTML = '';
-
-            entries.forEach((entry, index) => {
-                const quote = magicQuotes[index % magicQuotes.length];
-                const div = document.createElement('div');
-                div.className = 'entry-card';
-                div.onclick = () => openEdit(index);
-                div.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; font-size: 0.8rem;">
-                        <span>${entry.date}</span>
-                        <span style="color:#700" onclick="event.stopPropagation(); deleteEntry(${index})">✕</span>
-                    </div>
-                    <div style="font-weight:bold; margin: 10px 0; font-size: 1.2rem;">${entry.title}</div>
-                    <div class="quote-text">${quote}</div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function addEntry() {
-            const date = document.getElementById('new-date').value;
-            const title = document.getElementById('new-title').value;
-            const body = document.getElementById('new-content').value;
-            if(!title || !body) return;
-
-            entries.unshift({ date, title, body });
-            saveAndRefresh();
-            document.getElementById('new-title').value = '';
-            document.getElementById('new-content').value = '';
-        }
-
-        // EDIT LOGIC
-        function openEdit(index) {
-            currentEditIndex = index;
-            const entry = entries[index];
-            document.getElementById('edit-title').value = entry.title;
-            document.getElementById('edit-date').value = entry.date;
-            document.getElementById('edit-content').value = entry.body;
-            document.getElementById('edit-modal').style.display = 'flex';
-        }
-
-        function updateEntry() {
-            entries[currentEditIndex].title = document.getElementById('edit-title').value;
-            entries[currentEditIndex].date = document.getElementById('edit-date').value;
-            entries[currentEditIndex].body = document.getElementById('edit-content').value;
-            saveAndRefresh();
-            closeEdit();
-        }
-
-        function closeEdit() {
-            document.getElementById('edit-modal').style.display = 'none';
-            currentEditIndex = null;
-        }
-
-        function deleteEntry(index) {
-            if(confirm("Erase this memory?")) {
-                entries.splice(index, 1);
-                saveAndRefresh();
-            }
-        }
-
-        function saveAndRefresh() {
-            localStorage.setItem('diary_entries', JSON.stringify(entries));
+    function checkRiddle() {
+        const val = document.getElementById('riddle-answer').value.toLowerCase().trim();
+        if (val === config.answer.toLowerCase().trim()) {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
             renderEntries();
+        } else {
+            document.getElementById('auth-feedback').innerText = "The ink refuses to flow.";
+        }
+    }
+
+    function renderEntries() {
+        const list = document.getElementById('entry-list');
+        list.innerHTML = '';
+
+        if(entries.length === 0) {
+            list.innerHTML = '<div style="margin: auto; opacity: 0.3; font-style: italic;">No memories sealed...</div>';
+            return;
         }
 
-        function toggleSettings(show) {
-            document.getElementById('settings-menu').style.display = show ? 'block' : 'none';
-        }
+        entries.forEach((entry, index) => {
+            const quote = horcruxQuotes[index % horcruxQuotes.length];
+            const card = document.createElement('div');
+            card.className = 'entry-card';
+            card.onclick = () => openEdit(index);
+            card.innerHTML = `
+                <div style="font-size: 0.7rem; opacity: 0.6;">${entry.date}</div>
+                <div style="font-size: 1.2rem; font-weight: bold; text-align: center;">${entry.title}</div>
+                <div style="font-style: italic; font-size: 0.8rem; text-align: center; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;">
+                    "${quote}"
+                </div>
+                <div style="text-align: right; font-size: 1.2rem;" onclick="event.stopPropagation(); deleteEntry(${index})">✕</div>
+            `;
+            list.appendChild(card);
+        });
+    }
 
-        function saveSettings() {
-            config.riddle = document.getElementById('set-riddle').value || config.riddle;
-            config.answer = document.getElementById('set-answer').value || config.answer;
-            localStorage.setItem('diary_config', JSON.stringify(config));
-            location.reload();
-        }
+    function addEntry() {
+        const title = document.getElementById('new-title').value;
+        const body = document.getElementById('new-content').value;
+        const date = document.getElementById('new-date').value;
+        if(!title || !body) return;
 
-        init();
-    </script>
+        entries.unshift({ date, title, body });
+        saveAndRefresh();
+        document.getElementById('new-title').value = '';
+        document.getElementById('new-content').value = '';
+    }
+
+    function openEdit(index) {
+        currentEditIndex = index;
+        document.getElementById('edit-title').value = entries[index].title;
+        document.getElementById('edit-content').value = entries[index].body;
+        document.getElementById('edit-modal').classList.remove('hidden');
+    }
+
+    function updateEntry() {
+        entries[currentEditIndex].title = document.getElementById('edit-title').value;
+        entries[currentEditIndex].body = document.getElementById('edit-content').value;
+        saveAndRefresh();
+        closeEdit();
+    }
+
+    function closeEdit() { document.getElementById('edit-modal').classList.add('hidden'); }
+
+    function deleteEntry(index) {
+        if(confirm("Erase memory?")) {
+            entries.splice(index, 1);
+            saveAndRefresh();
+        }
+    }
+
+    function saveAndRefresh() {
+        localStorage.setItem('diary_entries', JSON.stringify(entries));
+        renderEntries();
+    }
+
+    function toggleSettings(show) { document.getElementById('settings-menu').style.display = show ? 'block' : 'none'; }
+
+    function saveSettings() {
+        config.riddle = document.getElementById('set-riddle').value || config.riddle;
+        config.answer = document.getElementById('set-answer').value || config.answer;
+        localStorage.setItem('diary_config', JSON.stringify(config));
+        location.reload();
+    }
+
+    init();
+</script>
 </body>
 </html>
