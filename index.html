@@ -8,113 +8,135 @@
     <style>
         :root {
             --parchment: #e4d5b7;
+            --page-yellow: #f4ecd8; /* Slightly lighter than background */
             --ink-black: #1a1512;
             --gold-leaf: #af9500;
-            --dark-shadow: rgba(0, 0, 0, 0.6);
+            --char: #2b1d12; /* Burned edge color */
+            --dark-shadow: rgba(0, 0, 0, 0.7);
         }
 
-        /* Prevent zooming/scrolling on Android */
+        /* Android Fit & Layout */
         html, body {
             overflow: hidden;
             height: 100%;
             width: 100%;
-            background-color: #0d0b09;
+            background-color: #050403;
             margin: 0;
             font-family: 'Crimson Text', serif;
-        }
-
-        /* Fixed Dimensions Container */
-        .app-container {
-            width: 100vw;
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .diary-page {
+        .diary-container {
+            width: 95vw;
+            height: 90vh;
+            max-width: 420px; /* Standard mobile width */
             background: var(--parchment);
-            background-image: 
-                /* Horcrux Scripture/Drawing Overlay */
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M10 10 Q 50 10 90 90' stroke='%3C#af950022' fill='none'/%3E%3Ccircle cx='50' cy='50' r='20' stroke='%23af950011' fill='none'/%3E%3C/svg%3E"),
-                url('https://www.transparenttextures.com/patterns/pinstriped-dark.png');
-            box-shadow: inset 0 0 60px var(--dark-shadow);
-            width: 90vw;
-            height: 80vh;
-            max-width: 400px; /* Compact for Android */
-            max-height: 600px;
+            background-image: url('https://www.transparenttextures.com/patterns/pinstriped-dark.png');
+            box-shadow: inset 0 0 80px var(--dark-shadow), 0 0 20px #000;
             position: relative;
             display: flex;
             flex-direction: column;
-            border-radius: 4px;
+            border: 2px solid #2a1f15;
         }
 
-        /* Horizontal Scroll Area */
+        /* Horcrux Settings Symbol (Deathly Hallows Style) */
+        .horcrux-settings {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hallows-icon {
+            width: 0; height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 20px solid var(--ink-black);
+            position: relative;
+        }
+        .hallows-icon::after {
+            content: '';
+            position: absolute;
+            top: 8px; left: -5px;
+            width: 10px; height: 10px;
+            border: 1.5px solid var(--parchment);
+            border-radius: 50%;
+        }
+
+        /* Horizontal Page Flip Container */
         #entry-list {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
             flex-grow: 1;
-            padding: 10px;
-            gap: 20px;
+            padding: 20px 10px;
+            gap: 15px;
+            -webkit-overflow-scrolling: touch;
         }
-
-        /* Hide scrollbar */
         #entry-list::-webkit-scrollbar { display: none; }
 
+        /* Burned Page Aesthetic */
         .entry-card {
-            min-width: 85%;
+            min-width: 80%;
+            height: 90%;
             scroll-snap-align: center;
-            background: rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.1);
-            padding: 15px;
+            background: var(--page-yellow);
+            padding: 20px;
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            clip-path: polygon(0 1%, 100% 0, 99% 100%, 1% 99%);
+            position: relative;
+            box-shadow: 2px 5px 15px rgba(0,0,0,0.3);
+            /* Burned edges effect */
+            border: 1px solid #dcd1b5;
+            background-image: 
+                radial-gradient(circle at 0% 0%, var(--char) 0%, transparent 15%),
+                radial-gradient(circle at 100% 100%, var(--char) 0%, transparent 10%),
+                radial-gradient(circle at 100% 0%, rgba(68, 44, 26, 0.4) 0%, transparent 12%);
+            clip-path: polygon(2% 0%, 98% 1%, 100% 4%, 99% 96%, 97% 100%, 3% 99%, 0% 97%, 1% 3%);
         }
 
-        /* Compact Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+        .entry-card h3 { margin: 10px 0; font-size: 1.4rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1); }
+
+        /* Inputs & Controls */
+        .bottom-shelf {
+            padding: 15px;
+            background: rgba(0,0,0,0.08);
+            border-top: 1px solid rgba(0,0,0,0.2);
         }
 
-        /* Fixed Input Styles */
         input, textarea {
             background: transparent;
             border: none;
-            border-bottom: 1px solid var(--gold-leaf);
-            font-family: inherit;
+            border-bottom: 1px dotted var(--gold-leaf);
             color: var(--ink-black);
+            width: 100%;
+            font-family: inherit;
+            margin-bottom: 8px;
             outline: none;
         }
 
-        .action-bar {
-            padding: 15px;
-            background: rgba(0,0,0,0.05);
-        }
-
-        /* Scriptural Decorations */
-        .horcrux-mark {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            opacity: 0.1;
-            width: 50px;
-            pointer-events: none;
+        .btn-seal {
+            background: var(--ink-black);
+            color: var(--parchment);
+            border: none;
+            width: 100%;
+            padding: 10px;
+            font-family: inherit;
+            letter-spacing: 2px;
+            cursor: pointer;
         }
 
         .hidden { display: none !important; }
-        
+
+        /* Modal View */
         #edit-modal {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.9);
             z-index: 1000;
             display: flex;
             justify-content: center;
@@ -124,51 +146,54 @@
 </head>
 <body>
 
-<div class="app-container">
-    <div id="auth-screen" class="diary-page" style="justify-content: center; align-items: center; text-align: center;">
-        <h2 style="letter-spacing: 5px;">R I D D L E</h2>
-        <p id="display-riddle" style="padding: 0 20px; font-style: italic;"></p>
-        <input type="text" id="riddle-answer" placeholder="Respond..." style="width: 60%; text-align: center;">
-        <button onclick="checkRiddle()" style="margin-top: 20px; background: none; border: 1px solid var(--ink-black); padding: 10px 20px;">Unlock</button>
-        <p id="auth-feedback" style="font-size: 0.8rem; height: 20px;"></p>
+<div class="diary-container">
+    <div id="auth-screen" style="padding: 40px; text-align: center; margin: auto;">
+        <h1 style="font-size: 1.8rem; letter-spacing: 4px; color: var(--gold-leaf);">TOM RIDDLE</h1>
+        <p id="display-riddle" style="font-style: italic; margin: 30px 0;"></p>
+        <input type="text" id="riddle-answer" placeholder="Speak to the ink..." style="text-align: center;">
+        <button class="btn-seal" onclick="checkRiddle()" style="margin-top: 20px;">OPEN</button>
+        <p id="auth-feedback" style="color: #600; margin-top: 10px; font-size: 0.9rem;"></p>
     </div>
 
-    <div id="main-screen" class="diary-page hidden">
-        <div class="header">
-            <strong>The Ledger</strong>
-            <span onclick="toggleSettings(true)" style="cursor:pointer;">&#9881;</span>
-        </div>
-
-        <div id="entry-list"></div>
-
-        <div class="action-bar">
-            <input type="text" id="new-title" placeholder="Title..." style="width: 70%;">
-            <input type="date" id="new-date" style="width: 25%; font-size: 0.7rem;">
-            <textarea id="new-content" placeholder="Write into the soul..." rows="2" style="width: 100%; margin-top: 10px;"></textarea>
-            <button onclick="addEntry()" style="width: 100%; margin-top: 10px; background: var(--ink-black); color: var(--parchment); border: none; padding: 5px;">Seal Memory</button>
-        </div>
-
-        <div id="settings-menu" class="diary-page" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:200;">
-            <div style="padding: 20px;">
-                <h3>Diary Settings</h3>
-                <input type="text" id="set-riddle" placeholder="New Riddle" style="width:100%; margin-bottom: 20px;">
-                <input type="text" id="set-answer" placeholder="New Answer" style="width:100%; margin-bottom: 20px;">
-                <button onclick="saveSettings()" style="width: 100%;">Save Magic</button>
-                <button onclick="toggleSettings(false)" style="width: 100%; margin-top: 10px;">Back</button>
+    <div id="main-screen" class="hidden" style="height: 100%; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; padding: 15px; align-items: center;">
+            <span style="font-size: 0.8rem; letter-spacing: 2px; opacity: 0.7;">MEMORIES SEALED</span>
+            <div class="horcrux-settings" onclick="toggleSettings(true)">
+                <div class="hallows-icon"></div>
             </div>
+        </div>
+
+        <div id="entry-list">
+            </div>
+
+        <div class="bottom-shelf">
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="new-title" placeholder="Memory Title" style="flex: 2;">
+                <input type="date" id="new-date" style="flex: 1; font-size: 0.7rem;">
+            </div>
+            <textarea id="new-content" placeholder="Pour your soul here..." rows="2"></textarea>
+            <button class="btn-seal" onclick="addEntry()">SEAL MEMORY</button>
+        </div>
+
+        <div id="settings-menu" class="hidden" style="position: absolute; top:0; left:0; width:100%; height:100%; background: var(--parchment); z-index: 100; padding: 30px; box-sizing: border-box;">
+            <h2>Enchantments</h2>
+            <label>The Riddle</label>
+            <input type="text" id="set-riddle">
+            <label>The Answer</label>
+            <input type="text" id="set-answer">
+            <button class="btn-seal" onclick="saveSettings()">UPDATE MAGIC</button>
+            <button class="btn-seal" onclick="toggleSettings(false)" style="background: transparent; color: black; border: 1px solid black; margin-top: 10px;">CLOSE</button>
         </div>
     </div>
 </div>
 
 <div id="edit-modal" class="hidden">
-    <div class="diary-page" style="height: 70vh;">
-        <div style="padding: 20px; display: flex; flex-direction: column; height: 100%;">
-            <input type="text" id="edit-title" style="font-weight: bold; font-size: 1.4rem;">
-            <textarea id="edit-content" style="flex-grow: 1; border: none; margin-top: 15px;"></textarea>
-            <div style="display: flex; gap: 10px;">
-                <button onclick="updateEntry()" style="flex:1; padding: 10px;">Save</button>
-                <button onclick="closeEdit()" style="flex:1; padding: 10px;">Close</button>
-            </div>
+    <div class="entry-card" style="min-width: 85%; height: 70%; scroll-snap-align: none;">
+        <input type="text" id="edit-title" style="font-weight: bold; font-size: 1.4rem;">
+        <textarea id="edit-content" style="height: 70%; border: none; margin-top: 15px;"></textarea>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-seal" onclick="updateEntry()" style="flex:1">RE-SEAL</button>
+            <button class="btn-seal" onclick="closeEdit()" style="flex:1; background: #600;">CLOSE</button>
         </div>
     </div>
 </div>
@@ -176,17 +201,10 @@
 <script>
     let entries = JSON.parse(localStorage.getItem('diary_entries')) || [];
     let config = JSON.parse(localStorage.getItem('diary_config')) || {
-        riddle: "What is the name of the orphan who lived?",
-        answer: "harry"
+        riddle: "I speak without a mouth and hear without ears. What am I?",
+        answer: "echo"
     };
     let currentEditIndex = null;
-
-    const horcruxQuotes = [
-        "A fragment of a soul, hidden in plain sight.",
-        "The serpent speaks only to its master.",
-        "Gold may shine, but the locket burns.",
-        "Knowledge is a dangerous Horcrux."
-    ];
 
     function init() {
         document.getElementById('display-riddle').innerText = config.riddle;
@@ -195,36 +213,35 @@
 
     function checkRiddle() {
         const val = document.getElementById('riddle-answer').value.toLowerCase().trim();
-        if (val === config.answer.toLowerCase().trim()) {
+        if (val === config.answer.toLowerCase()) {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-screen').classList.remove('hidden');
             renderEntries();
         } else {
-            document.getElementById('auth-feedback').innerText = "The ink refuses to flow.";
+            document.getElementById('auth-feedback').innerText = "The ink refuses to appear.";
         }
     }
 
     function renderEntries() {
         const list = document.getElementById('entry-list');
         list.innerHTML = '';
-
+        
         if(entries.length === 0) {
-            list.innerHTML = '<div style="margin: auto; opacity: 0.3; font-style: italic;">No memories sealed...</div>';
+            list.innerHTML = '<div style="margin: auto; opacity: 0.4;">The pages are empty...</div>';
             return;
         }
 
         entries.forEach((entry, index) => {
-            const quote = horcruxQuotes[index % horcruxQuotes.length];
             const card = document.createElement('div');
             card.className = 'entry-card';
             card.onclick = () => openEdit(index);
             card.innerHTML = `
-                <div style="font-size: 0.7rem; opacity: 0.6;">${entry.date}</div>
-                <div style="font-size: 1.2rem; font-weight: bold; text-align: center;">${entry.title}</div>
-                <div style="font-style: italic; font-size: 0.8rem; text-align: center; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;">
-                    "${quote}"
+                <div style="font-size: 0.7rem; opacity: 0.5;">${entry.date}</div>
+                <h3>${entry.title}</h3>
+                <div style="margin-top: 40px; font-style: italic; text-align: center; opacity: 0.6; font-size: 0.9rem;">
+                   "This memory has been protected by the Dark Arts."
                 </div>
-                <div style="text-align: right; font-size: 1.2rem;" onclick="event.stopPropagation(); deleteEntry(${index})">✕</div>
+                <div style="position: absolute; bottom: 15px; right: 15px; cursor: pointer; color: #700;" onclick="event.stopPropagation(); deleteEntry(${index})">ERASE</div>
             `;
             list.appendChild(card);
         });
@@ -235,7 +252,6 @@
         const body = document.getElementById('new-content').value;
         const date = document.getElementById('new-date').value;
         if(!title || !body) return;
-
         entries.unshift({ date, title, body });
         saveAndRefresh();
         document.getElementById('new-title').value = '';
@@ -259,7 +275,7 @@
     function closeEdit() { document.getElementById('edit-modal').classList.add('hidden'); }
 
     function deleteEntry(index) {
-        if(confirm("Erase memory?")) {
+        if(confirm("Erase this memory forever?")) {
             entries.splice(index, 1);
             saveAndRefresh();
         }
@@ -270,11 +286,18 @@
         renderEntries();
     }
 
-    function toggleSettings(show) { document.getElementById('settings-menu').style.display = show ? 'block' : 'none'; }
+    function toggleSettings(show) {
+        const menu = document.getElementById('settings-menu');
+        menu.classList.toggle('hidden', !show);
+        if(show) {
+            document.getElementById('set-riddle').value = config.riddle;
+            document.getElementById('set-answer').value = config.answer;
+        }
+    }
 
     function saveSettings() {
-        config.riddle = document.getElementById('set-riddle').value || config.riddle;
-        config.answer = document.getElementById('set-answer').value || config.answer;
+        config.riddle = document.getElementById('set-riddle').value;
+        config.answer = document.getElementById('set-answer').value;
         localStorage.setItem('diary_config', JSON.stringify(config));
         location.reload();
     }
