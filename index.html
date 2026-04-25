@@ -12,10 +12,10 @@
             --ink-black: #1a1512;
             --gold-leaf: #af9500;
             --char: #2b1d12;
-            --dark-shadow: rgba(0, 0, 0, 0.8);
+            --dark-shadow: rgba(0, 0, 0, 0.85);
         }
 
-        /* Magical Symbol Background */
+        /* Full Screen Background with Hallows Pattern */
         html, body {
             overflow: hidden;
             height: 100%;
@@ -25,97 +25,105 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Background filled with magical runes and symbols */
             background-color: #050403;
             background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23af9500' fill-opacity='0.1'%3E%3Cpath d='M40 10 L50 35 L75 35 L55 50 L65 75 L40 60 L15 75 L25 50 L5 35 L30 35 Z'/%3E%3Ccircle cx='40' cy='45' r='15' stroke='%23af9500' fill='none'/%3E%3Crect x='38' y='20' width='4' height='50'/%3E%3C/g%3E%3C/svg%3E"),
-                radial-gradient(circle, #1a1512 0%, #050403 100%);
-            background-size: 100px 100px, cover;
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 80 80'%3E%3Cg fill='%23af9500' fill-opacity='0.08'%3E%3Cpath d='M40 10 L50 35 L75 35 L55 50 L65 75 L40 60 L15 75 L25 50 L5 35 L30 35 Z'/%3E%3Ccircle cx='40' cy='45' r='15' stroke='%23af9500' fill='none'/%3E%3C/g%3E%3C/svg%3E");
         }
 
+        /* Optimized for Samsung Galaxy J2 (540x960 approx) */
         .diary-container {
-            width: 95vw;
-            height: 92vh;
-            max-width: 420px;
+            width: 100vw;
+            height: 100vh;
+            max-width: 540px; /* J2 Width */
+            max-height: 960px; /* J2 Height */
             background: var(--parchment);
             background-image: url('https://www.transparenttextures.com/patterns/pinstriped-dark.png');
-            box-shadow: inset 0 0 80px var(--dark-shadow), 0 0 30px #000;
+            box-shadow: inset 0 0 100px var(--dark-shadow);
             position: relative;
             display: flex;
             flex-direction: column;
-            border: 3px solid #2a1f15;
-            border-radius: 5px;
+            border-left: 8px solid #1a1512; /* Spine effect */
         }
 
-        /* Hallows Settings Icon */
+        /* Larger Settings Icon */
         .horcrux-settings {
-            width: 30px; height: 30px; cursor: pointer;
+            width: 45px; height: 45px; 
             display: flex; justify-content: center; align-items: center;
         }
         .hallows-icon {
             width: 0; height: 0;
-            border-left: 12px solid transparent; border-right: 12px solid transparent;
-            border-bottom: 20px solid var(--ink-black); position: relative;
+            border-left: 15px solid transparent; border-right: 15px solid transparent;
+            border-bottom: 25px solid var(--ink-black); position: relative;
         }
         .hallows-icon::after {
-            content: ''; position: absolute; top: 8px; left: -5px;
-            width: 10px; height: 10px; border: 1.5px solid var(--parchment); border-radius: 50%;
+            content: ''; position: absolute; top: 10px; left: -6px;
+            width: 12px; height: 12px; border: 2px solid var(--parchment); border-radius: 50%;
         }
 
-        /* Horizontal Scrolling (Past to the Left) */
+        /* Horizontal Flip List */
         #entry-list {
             display: flex;
-            flex-direction: row-reverse; /* Newest right, scroll left for past */
+            flex-direction: row-reverse;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             flex-grow: 1;
-            padding: 20px 10px;
-            gap: 20px;
+            padding: 25px 15px;
+            gap: 25px;
             -webkit-overflow-scrolling: touch;
         }
         #entry-list::-webkit-scrollbar { display: none; }
 
+        /* Burned Page - Larger for J2 visibility */
         .entry-card {
-            min-width: 82%;
-            height: 92%;
+            min-width: 85%;
+            height: 85%;
             scroll-snap-align: center;
             background: var(--page-yellow);
-            padding: 20px;
+            padding: 25px;
             box-sizing: border-box;
             position: relative;
-            box-shadow: 5px 10px 20px rgba(0,0,0,0.4);
+            box-shadow: 10px 10px 25px rgba(0,0,0,0.5);
             border: 1px solid #dcd1b5;
             background-image: 
-                radial-gradient(circle at 0% 0%, var(--char) 0%, transparent 20%),
-                radial-gradient(circle at 100% 100%, var(--char) 0%, transparent 15%);
-            clip-path: polygon(1% 1%, 99% 0%, 100% 98%, 2% 100%, 0% 95%, 1% 5%);
+                radial-gradient(circle at 0% 0%, var(--char) 0%, transparent 25%),
+                radial-gradient(circle at 100% 100%, var(--char) 0%, transparent 20%);
+            clip-path: polygon(1% 2%, 98% 0%, 100% 97%, 3% 100%, 0% 95%, 2% 5%);
         }
 
+        .entry-card h3 { 
+            font-size: 1.7rem; 
+            margin: 15px 0; 
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        /* Inputs - Scaled up for J2 touch accuracy */
         .bottom-shelf {
-            padding: 15px;
-            background: rgba(0,0,0,0.12);
-            border-top: 2px solid var(--ink-black);
+            padding: 20px;
+            background: rgba(0,0,0,0.15);
+            border-top: 3px solid var(--ink-black);
         }
 
         input, textarea {
             background: transparent; border: none;
-            border-bottom: 1px solid var(--gold-leaf);
+            border-bottom: 2px solid var(--gold-leaf);
             color: var(--ink-black); width: 100%;
-            font-family: inherit; margin-bottom: 10px; outline: none;
+            font-family: inherit; margin-bottom: 15px; outline: none;
+            font-size: 1.1rem;
         }
 
         .btn-seal {
             background: var(--ink-black); color: var(--parchment);
-            border: none; width: 100%; padding: 12px;
-            font-family: inherit; letter-spacing: 3px; cursor: pointer;
-            font-weight: bold;
+            border: none; width: 100%; padding: 15px;
+            font-family: inherit; letter-spacing: 4px; cursor: pointer;
+            font-weight: bold; font-size: 1.1rem;
         }
 
         .hidden { display: none !important; }
 
         #edit-modal {
             position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.95); z-index: 1000;
+            background: rgba(0,0,0,0.98); z-index: 1000;
             display: flex; justify-content: center; align-items: center;
         }
     </style>
@@ -124,16 +132,16 @@
 
 <div class="diary-container">
     <div id="auth-screen" style="padding: 40px; text-align: center; margin: auto;">
-        <h1 style="letter-spacing: 6px; color: var(--gold-leaf); text-shadow: 0 0 10px rgba(175, 149, 0, 0.4);">RIDDLE</h1>
-        <p id="display-riddle" style="font-style: italic; min-height: 50px;"></p>
+        <h1 style="letter-spacing: 8px; color: var(--gold-leaf); font-size: 2.2rem;">RIDDLE</h1>
+        <p id="display-riddle" style="font-style: italic; min-height: 60px; font-size: 1.2rem;"></p>
         <input type="text" id="riddle-answer" placeholder="Respond..." style="text-align: center;">
-        <button class="btn-seal" onclick="checkRiddle()" style="margin-top: 25px;">UNSEAL</button>
-        <p id="auth-feedback" style="color: #800; font-size: 0.8rem; margin-top: 15px;"></p>
+        <button class="btn-seal" onclick="checkRiddle()" style="margin-top: 30px;">OPEN DIARY</button>
+        <p id="auth-feedback" style="color: #900; font-size: 1rem; margin-top: 20px; font-weight: bold;"></p>
     </div>
 
     <div id="main-screen" class="hidden" style="height: 100%; display: flex; flex-direction: column;">
-        <div style="display: flex; justify-content: space-between; padding: 15px; align-items: center;">
-            <span style="font-size: 0.7rem; letter-spacing: 2px; opacity: 0.6;">JOURNAL OF THE HEIR</span>
+        <div style="display: flex; justify-content: space-between; padding: 20px; align-items: center;">
+            <span style="font-size: 0.9rem; letter-spacing: 3px; font-weight: bold; opacity: 0.8;">THE HORCRUX</span>
             <div class="horcrux-settings" onclick="toggleSettings(true)">
                 <div class="hallows-icon"></div>
             </div>
@@ -142,31 +150,31 @@
         <div id="entry-list"></div>
 
         <div class="bottom-shelf">
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="new-title" placeholder="Memory Name" style="flex: 2;">
-                <input type="date" id="new-date" style="flex: 1; font-size: 0.7rem;">
+            <div style="display: flex; gap: 15px;">
+                <input type="text" id="new-title" placeholder="Title" style="flex: 2;">
+                <input type="date" id="new-date" style="flex: 1.5; font-size: 0.9rem;">
             </div>
-            <textarea id="new-content" placeholder="Whisper into the parchment..." rows="2"></textarea>
+            <textarea id="new-content" placeholder="Whisper your soul..." rows="2"></textarea>
             <button class="btn-seal" onclick="addEntry()">SEAL MEMORY</button>
         </div>
 
-        <div id="settings-menu" class="hidden" style="position: absolute; top:0; left:0; width:100%; height:100%; background: var(--parchment); z-index: 100; padding: 30px; box-sizing: border-box;">
+        <div id="settings-menu" class="hidden" style="position: absolute; top:0; left:0; width:100%; height:100%; background: var(--parchment); z-index: 100; padding: 40px; box-sizing: border-box;">
             <h2>Enchantments</h2>
-            <input type="text" id="set-riddle" placeholder="Riddle Question">
-            <input type="text" id="set-answer" placeholder="Riddle Answer">
-            <button class="btn-seal" onclick="saveSettings()">RE-BIND DIARY</button>
-            <button class="btn-seal" onclick="toggleSettings(false)" style="background: transparent; color: black; border: 1px solid black; margin-top: 10px;">BACK</button>
+            <input type="text" id="set-riddle" placeholder="Riddle">
+            <input type="text" id="set-answer" placeholder="Answer">
+            <button class="btn-seal" onclick="saveSettings()">RE-BIND MAGIC</button>
+            <button class="btn-seal" onclick="toggleSettings(false)" style="background: transparent; color: black; border: 2px solid black; margin-top: 20px;">BACK</button>
         </div>
     </div>
 </div>
 
 <div id="edit-modal" class="hidden">
-    <div class="entry-card" style="min-width: 85%; height: 75%;">
-        <input type="text" id="edit-title" style="font-weight: bold; font-size: 1.4rem;">
-        <textarea id="edit-content" style="height: 65%; border: none; margin-top: 15px;"></textarea>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-seal" onclick="updateEntry()" style="flex:1">RE-SEAL</button>
-            <button class="btn-seal" onclick="closeEdit()" style="flex:1; background: #600;">BACK</button>
+    <div class="entry-card" style="min-width: 90%; height: 80%;">
+        <input type="text" id="edit-title" style="font-weight: bold; font-size: 1.6rem;">
+        <textarea id="edit-content" style="height: 70%; border: none; margin-top: 20px; font-size: 1.1rem; line-height: 1.5;"></textarea>
+        <div style="display: flex; gap: 15px;">
+            <button class="btn-seal" onclick="updateEntry()" style="flex:1">SAVE</button>
+            <button class="btn-seal" onclick="closeEdit()" style="flex:1; background: #700;">BACK</button>
         </div>
     </div>
 </div>
@@ -183,7 +191,7 @@
         document.getElementById('display-riddle').innerText = config.riddle;
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('new-date').value = today;
-        document.getElementById('new-date').max = today; // Restrict future dates
+        document.getElementById('new-date').max = today;
     }
 
     function checkRiddle() {
@@ -192,19 +200,17 @@
             document.getElementById('main-screen').classList.remove('hidden');
             renderEntries();
         } else {
-            document.getElementById('auth-feedback').innerText = "The ink refuses to flow for you.";
+            document.getElementById('auth-feedback').innerText = "The ink refuses your touch.";
         }
     }
 
     function renderEntries() {
         const list = document.getElementById('entry-list');
         list.innerHTML = '';
-        
-        // Sort Date Wise: Newest first
         entries.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         if(entries.length === 0) {
-            list.innerHTML = '<div style="margin: auto; opacity: 0.4; font-style: italic;">The pages await your soul...</div>';
+            list.innerHTML = '<div style="margin: auto; opacity: 0.5; font-size: 1.2rem;">The parchment is blank...</div>';
             return;
         }
 
@@ -213,12 +219,12 @@
             card.className = 'entry-card';
             card.onclick = () => openEdit(index);
             card.innerHTML = `
-                <div style="font-size: 0.75rem; font-weight: bold;">${entry.date}</div>
-                <h3 style="margin: 15px 0;">${entry.title}</h3>
-                <div style="margin-top: 50px; font-style: italic; text-align: center; opacity: 0.5;">
-                   "A memory preserved in ink."
+                <div style="font-size: 0.9rem; font-weight: bold; opacity: 0.7;">${entry.date}</div>
+                <h3>${entry.title}</h3>
+                <div style="margin-top: 60px; font-style: italic; text-align: center; opacity: 0.6; font-size: 1rem; line-height: 1.4;">
+                   "This fragment of a soul is locked away by ancient magic."
                 </div>
-                <div style="position: absolute; bottom: 20px; right: 20px; cursor: pointer; color: #700; font-weight: bold; font-size: 0.7rem;" onclick="event.stopPropagation(); deleteEntry(${index})">ERASE</div>
+                <div style="position: absolute; bottom: 25px; right: 25px; cursor: pointer; color: #800; font-weight: bold; font-size: 0.9rem;" onclick="event.stopPropagation(); deleteEntry(${index})">ERASE</div>
             `;
             list.appendChild(card);
         });
@@ -231,7 +237,7 @@
         const today = new Date().toISOString().split('T')[0];
 
         if(!title || !body) return;
-        if(date > today) return alert("You cannot write in the future.");
+        if(date > today) return alert("Prophecies are forbidden.");
 
         entries.push({ date, title, body });
         saveAndRefresh();
@@ -256,7 +262,7 @@
     function closeEdit() { document.getElementById('edit-modal').classList.add('hidden'); }
 
     function deleteEntry(index) {
-        if(confirm("Destroy this piece of soul?")) {
+        if(confirm("Erase this memory forever?")) {
             entries.splice(index, 1);
             saveAndRefresh();
         }
@@ -269,15 +275,11 @@
 
     function toggleSettings(show) {
         document.getElementById('settings-menu').classList.toggle('hidden', !show);
-        if(show) {
-            document.getElementById('set-riddle').value = config.riddle;
-            document.getElementById('set-answer').value = config.answer;
-        }
     }
 
     function saveSettings() {
-        config.riddle = document.getElementById('set-riddle').value;
-        config.answer = document.getElementById('set-answer').value;
+        config.riddle = document.getElementById('set-riddle').value || config.riddle;
+        config.answer = document.getElementById('set-answer').value || config.answer;
         localStorage.setItem('diary_config', JSON.stringify(config));
         location.reload();
     }
